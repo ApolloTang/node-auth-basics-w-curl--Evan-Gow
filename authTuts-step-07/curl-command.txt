@@ -1,0 +1,13 @@
+
+-X let you specify GET or POST:
+  curl -X GET http://localhost:3000
+
+-X GET is actually the default, so no need to specified:
+  curl http://localhost:3000
+
+-v is verbose:
+  curl http://localhost:3000 -v
+
+-c cookie-file.txt  // <-- persist cookie in a file (like browser would do)
+  curl http://localhost:3000 -v -c cookie-file.txt
+
