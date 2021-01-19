@@ -2,6 +2,7 @@
 const express = require('express')
 const uuid = require('uuid').v4
 const session = require('express-session')
+const FileStore = require('session-file-store')(session)  // <--- added
 
 // create the server
 const app = express()
@@ -14,6 +15,7 @@ app.use(
       console.log(req.sessionID)
       return uuid() // use UUIDs for session IDs
     },
+    store: new FileStore(),   // <----- added
     secret: 'some-randomly-generated-string-from-dot-env-file-111',
     resave: false,
     saveUninitialized: true
