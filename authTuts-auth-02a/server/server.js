@@ -2,16 +2,12 @@
 const express = require('express')
 const uuid = require('uuid').v4
 const session = require('express-session')
-const FileStore = require('session-file-store')(session)  
-const bodyParser = require('body-parser')  // <--- added
+const FileStore = require('session-file-store')(session)  // <--- added
 
 // create the server
 const app = express()
 
 // add & configure middlware
-app.use(bodyParser.urlencoded({ extended: false }))   // <--- added
-app.use(bodyParser.json())                            // <--- added
-
 app.use(
   session({
     genid: req => {
@@ -25,7 +21,6 @@ app.use(
     saveUninitialized: true
   })
 )
-
 
 // create the homepage route at '/'
 app.get('/', (req, res) => {
@@ -43,7 +38,7 @@ app.get('/login', (req, res) => {
 })
 app.post('/login', (req, res) => {
   console.log('Inside POST /login callback function')
-  console.log(req.body)        // { email: 'test@test.com', password: 'password' }
+  console.log(req.body)        // undefined
   res.send(`You posted to the login page!\n`)
 })
 
