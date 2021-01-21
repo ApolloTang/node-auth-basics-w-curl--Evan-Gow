@@ -19,7 +19,7 @@ app.use(
       console.log(req.sessionID)
       return uuid() // use UUIDs for session IDs
     },
-    store: new FileStore(),   // <----- added
+    store: new FileStore(),
     secret: 'some-randomly-generated-string-from-dot-env-file-111',
     resave: false,
     saveUninitialized: true
