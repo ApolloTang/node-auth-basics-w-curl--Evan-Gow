@@ -47,6 +47,10 @@ passport.serializeUser((user, done) => {
 const app = express()
 
 // add & configure middlware
+app.use((req, res, next) => {
+  console.log('-----------------', Date.now())
+  next()
+})
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
