@@ -44,7 +44,10 @@ passport.serializeUser((user, done) => {
   console.log('[pp.serializerUser] user from database: ', user)
   const userID = user.id
   console.log('[pp.serializerUser] user id has been plugged out of user: ', userID)
-  console.log('[pp.serializerUser] >>> ???  User id is save to the session file store here')
+  console.log('[pp.serializerUser] User id is save to the session file store here')
+  // passport have save the user id in file: session/xxx-xxx-xxxx.json
+  // {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"passport":{"user":"2f24vvg"},"__lastAccess":1611207496146}
+  //                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   done(null, userID);
 })
 
