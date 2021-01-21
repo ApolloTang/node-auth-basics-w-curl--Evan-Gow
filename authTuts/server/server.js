@@ -44,7 +44,7 @@ passport.serializeUser((user, done) => {
   console.log('[pp.serializerUser] user from database: ', user)
   const userID = user.id
   console.log('[pp.serializerUser] user id has been plugged out of user: ', userID)
-  console.log('[pp.serializerUser] User id is save to the session file store here')
+  console.log('[pp.serializerUser] >>> ???  User id is save to the session file store here')
   done(null, userID);
 })
 
