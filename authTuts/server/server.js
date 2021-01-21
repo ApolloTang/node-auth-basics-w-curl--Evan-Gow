@@ -113,17 +113,20 @@ app.post('/login', (req, res, next) => {
         console.log('login method DOSE NOT exist in req object')
       }
 
-      req.login(user, (err) => {
-        console.log('== C ==')
-        console.log('At this point passport has been added to req.session: passport is an obj with property "user"')
-        console.log('At this point user has been added to req: user is the user data retrived from database')
-        console.log('req.session.passport is an obj with property "user"')
-        console.log('req.user is the user data retrived from database')
+      req.login(
+        user,
+        (err) => { // <--- passport.serializeUser() is called before this callback
+          console.log('== C ==')
+          console.log('At this point passport has been added to req.session: passport is an obj with property "user"')
+          console.log('At this point user has been added to req: user is the user data retrived from database')
+          console.log('req.session.passport is an obj with property "user"')
+          console.log('req.user is the user data retrived from database')
 
-        console.log('[R:POST /login pp.login()] req.session.passport:', req.session.passport) // <-- undefined
-        console.log('[R:POST /login pp.login()] req.user', req.user)   // <-- undefined
-        return res.send('[R:POST /login passport.login()] You were authenticated & logged in!\n');
-      })
+          console.log('[R:POST /login pp.login()] req.session.passport:', req.session.passport) // <-- undefined
+          console.log('[R:POST /login pp.login()] req.user', req.user)   // <-- undefined
+          return res.send('[R:POST /login passport.login()] You were authenticated & logged in!\n');
+        }
+      )
     }
   )(req, res, next);
 })
