@@ -7,6 +7,11 @@ const session = require('express-session')
 const app = express()
 
 // add & configure middlware
+app.use((req, res, next) => {
+  console.log('-----------------', Date.now())
+  next()
+})
+
 app.use(
   session({
     genid: req => {

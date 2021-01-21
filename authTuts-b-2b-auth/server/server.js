@@ -9,8 +9,12 @@ const bodyParser = require('body-parser')  // <--- added
 const app = express()
 
 // add & configure middlware
-app.use(bodyParser.urlencoded({ extended: false }))   // <--- added
-app.use(bodyParser.json())                            // <--- added
+app.use((req, res, next) => {
+  console.log('-----------------', Date.now())
+  next()
+})
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.use(
   session({
