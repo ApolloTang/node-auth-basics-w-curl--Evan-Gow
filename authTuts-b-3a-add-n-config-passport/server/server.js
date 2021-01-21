@@ -40,10 +40,12 @@ passport.use(
 
 // tell passport how to serialize the user
 passport.serializeUser((user, done) => {
-  console.log('== A ==')
+  console.log('== B ==')
   console.log('[pp.serializerUser] user: ', user)
+  const userID = user.id
+  console.log('[pp.serializerUser] user id has been plugged out of user: ', userID)
   console.log('[pp.serializerUser] User id is save to the session file store here')
-  done(null, user.id);
+  done(null, userID);
 })
 
 
@@ -98,14 +100,26 @@ app.post('/login', (req, res, next) => {
   passport.authenticate(  // <--- this will invoke passport.use()
     'local',
     (err, user, info) => {
-      console.log('== 4 ==')
+      console.log('== A ==')
+      console.log('At this point passport has NOT been added to session')
+      console.log('At this point user has NOT been added to request object')
+
       console.log('[R:POST /login pp.authenticate()] req.session.passport:', JSON.stringify(req.session.passport)) // <-- undefined
       console.log('[R:POST /login pp.authenticate()] req.user', JSON.stringify(req.user))   // <-- undefined
 
-      // login() method is added to req obj if user is found in database
+      if ('login' in req) {
+        console.log('login method exist in req object') // login() method is added to req obj if user is found in database
+      } else {
+        console.log('login method DOSE NOT exist in req object')
+      }
+
       req.login(user, (err) => {
-        console.log('== B ==')
-        console.log('[R:POST /login pp.login()]: req.user', JSON.stringify(req.user)); // <--- null
+        console.log('== C ==')
+        console.log('At this point passport has been added to session')
+        console.log('At this point user has been added to request object')
+
+        console.log('[R:POST /login pp.login()] req.session.passport:', JSON.stringify(req.session.passport)) // <-- undefined
+        console.log('[R:POST /login pp.login()] req.user', JSON.stringify(req.user))   // <-- undefined
         return res.send('[R:POST /login passport.login()] You were authenticated & logged in!\n');
       })
     }
