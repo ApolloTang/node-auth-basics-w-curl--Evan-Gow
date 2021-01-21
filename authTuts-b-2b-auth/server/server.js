@@ -15,8 +15,7 @@ app.use(bodyParser.json())                            // <--- added
 app.use(
   session({
     genid: req => {
-      console.log('Inside the session middleware')
-      console.log(req.sessionID)
+      console.log('[mw session] req.sessionID:', req.sessionID)
       return uuid() // use UUIDs for session IDs
     },
     store: new FileStore(),
@@ -26,25 +25,22 @@ app.use(
   })
 )
 
-
 // create the homepage route at '/'
 app.get('/', (req, res) => {
-  console.log('Inside the homepage callback function')
-  console.log(req.sessionID)
-  res.send(`Hit home page\n`)
+  console.log('[route /] req.sessionID: ', req.sessionID)
+  res.send('[route /] Hit home page\n')
 })
 
 
 // create the login get and post routes
 app.get('/login', (req, res) => {
-  console.log('Inside GET /login callback function')
-  console.log(req.sessionID)
-  res.send(`You got the login page!\n`)
+  console.log('[R:GET /login] req.sessionId: ', req.sessionID)
+  res.send('[R:GET /login] You got the login page!\n')
 })
 app.post('/login', (req, res) => {
-  console.log('Inside POST /login callback function')
-  console.log(req.body)        // { email: 'test@test.com', password: 'password' }
-  res.send(`You posted to the login page!\n`)
+  console.log('[R:POST /login] req.sessionId: ', req.sessionID)
+  console.log('[R:POST /login] req.body: ', req.body)        // { email: 'test@test.com', password: 'password' }
+  res.send(`[R:POST /login] You posted to the login page!\n`)
 })
 
 

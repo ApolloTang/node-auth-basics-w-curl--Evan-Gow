@@ -10,8 +10,7 @@ const app = express()
 app.use(
   session({
     genid: req => {
-      console.log('Inside the session middleware')
-      console.log(req.sessionID)
+      console.log('[mw session] req.sessionID:', req.sessionID)
       return uuid() // use UUIDs for session IDs
     },
     secret: 'some-randomly-generated-string-from-dot-env-file-111',
@@ -22,9 +21,8 @@ app.use(
 
 // create the homepage route at '/'
 app.get('/', (req, res) => {
-  console.log('Inside the homepage callback function')
-  console.log(req.sessionID)
-  res.send(`Hit home page\n`)
+  console.log('[route /] req.sessionID: ', req.sessionID)
+  res.send('[route /] Hit home page\n')
 })
 
 // tell the server what port to listen on

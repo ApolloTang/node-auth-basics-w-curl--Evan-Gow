@@ -14,4 +14,3 @@
     "dev:server": "nodemon --ignore sessions/ server.js"
   }
 }
-
