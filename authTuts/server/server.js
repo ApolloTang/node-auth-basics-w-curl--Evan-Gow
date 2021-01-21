@@ -19,6 +19,7 @@ passport.use(
   new LocalStrategy(
     { usernameField: 'email' },
     (email, password, done) => {
+      console.log('== 2 ==')
 
       // here is where you make a call to the database
       // to find the user based on their username or email address
@@ -26,9 +27,11 @@ passport.use(
       const user = users[0]
 
       if(email === user.email && password === user.password) {
+        console.log('== 3a ==')
         console.log('[passport local startegy] found user in db')
-        return done(null, user)
+        return done(null, user) // <--- when done is called login() method is added to request object
       } else {
+        console.log('== 3b ==')
         console.log('[passport local startegy] bad email/password combination')
       }
     }
@@ -37,6 +40,8 @@ passport.use(
 
 // tell passport how to serialize the user
 passport.serializeUser((user, done) => {
+  console.log('== A ==')
+  console.log('[pp.serializerUser] user: ', user)
   console.log('[pp.serializerUser] User id is save to the session file store here')
   done(null, user.id);
 })
@@ -89,14 +94,17 @@ app.post('/login', (req, res, next) => {
   console.log('[R:POST /login] req.sessionId: ', req.sessionID)
   console.log('[R:POST /login] req.body: ', req.body)
 
-  passport.authenticate(
+  console.log('== 1 ==')
+  passport.authenticate(  // <--- this will invoke passport.use()
     'local',
     (err, user, info) => {
+      console.log('== 4 ==')
       console.log('[R:POST /login pp.authenticate()] req.session.passport:', JSON.stringify(req.session.passport)) // <-- undefined
       console.log('[R:POST /login pp.authenticate()] req.user', JSON.stringify(req.user))   // <-- undefined
 
       // login() method is added to req obj if user is found in database
       req.login(user, (err) => {
+        console.log('== B ==')
         console.log('[R:POST /login pp.login()]: req.user', JSON.stringify(req.user)); // <--- null
         return res.send('[R:POST /login passport.login()] You were authenticated & logged in!\n');
       })
