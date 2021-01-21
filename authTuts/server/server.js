@@ -10,9 +10,11 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 
-const users = [
-  {id: '2f24vvg', email: 'test@test.com', password: 'password'}
-]
+const users = {
+  'fakeUserID': {id: 'fakeUserID', email: 'test@test.com', password: 'password'}
+}
+const getUserFromDatabaseByEmailPassword = (email, password) => users['fakeUserID']
+const getUserFromDatabaseById = (id) => users[id]
 
 // configure passport.js to use the local strategy
 passport.use(
@@ -23,8 +25,7 @@ passport.use(
 
       // here is where you make a call to the database
       // to find the user based on their username or email address
-      // for now, we'll just pretend we found that it was users[0]
-      const user = users[0]
+      const user = getUserFromDatabaseByEmailPassword(email, password)
 
       if(email === user.email && password === user.password) {
         console.log('== 3a ==')
@@ -38,6 +39,7 @@ passport.use(
   )
 )
 
+
 // tell passport how to serialize the user
 passport.serializeUser((user, done) => {
   console.log('== B ==')
@@ -46,15 +48,24 @@ passport.serializeUser((user, done) => {
   console.log('[pp.serializerUser] user id has been plugged out of user: ', userID)
   console.log('[pp.serializerUser] User id is save to the session file store here')
   // passport have save the user id in file: session/xxx-xxx-xxxx.json
-  // {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"passport":{"user":"2f24vvg"},"__lastAccess":1611207496146}
-  //                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"passport":{"user":"fakeUserID"},"__lastAccess":1611207496146}
+  //                                                                                                 ^^^^^^^^^^
   done(null, userID);
 })
 
 // **** ADDED ****
+// This is invoke for every route only if session has the passport property
 passport.deserializeUser((id, done) => {
+  console.log('== auth 1 ==')
+  // passport retrived the user id in file: session/xxx-xxx-xxxx.json
+  // {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"passport":{"user":"fakeUserID"},"__lastAccess":1611207496146}
+  //                                                                                                 ^^^^^^^^^^
   console.log('[pp.deserializeUser] user id passport saved in the session file store:', id)
-  const user = users[0].id === id ? users[0] : false;
+
+  const userFromDataBase = getUserFromDatabaseById(id)
+  const user = userFromDataBase.id === id ? userFromDataBase : false;  // <--- !!! not too sure about this !!!
+  console.log('[pp.deserializeUser] user ', user)
+
   done(null, user);
 });
 
@@ -122,9 +133,9 @@ app.post('/login', (req, res, next) => {
         console.log('login method DOSE NOT exist in req object')
       }
 
-      req.login(
+      req.login( // <--- this will invoke passport.serializeUser()
         user,
-        (err) => { // <--- passport.serializeUser() is called before this callback
+        (err) => { // <---  this callback is called after passport.serializeUser() finished executing
           console.log('== C ==')
           console.log('At this point passport has been added to req.session: passport is an obj with property "user"')
           console.log('At this point user has been added to req: user is the user data retrived from database')
@@ -138,6 +149,19 @@ app.post('/login', (req, res, next) => {
       )
     }
   )(req, res, next);
+})
+
+
+app.get('/authrequired', (req, res) => {
+  console.log('== auth 2 ==')
+  console.log('[route /authrequired] req.sessionID: ', req.sessionID)
+  console.log('[R:POST /authrequired] req.user',req.user)
+  console.log('[R:POST /authrequired] req.isAuthenticated()',req.isAuthenticated())
+  if(req.isAuthenticated()) {
+    res.send('[R:POST /authrequired] you hit the authentication endpoint\n')
+  } else {
+    res.redirect('/')
+  }
 })
 
 

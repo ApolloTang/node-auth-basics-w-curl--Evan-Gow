@@ -1,4 +1,8 @@
-Aiuthentication Step 2
+Authentication Step 4
+
+  curl http://localhost:3000/authrequired -v -b cookie-file.txt
+
+Authentication Step 2
 
 curl -X POST http://localhost:3000/login \
   -v \
