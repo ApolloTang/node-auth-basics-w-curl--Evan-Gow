@@ -11,7 +11,9 @@ app.use(
   session({
     genid: req => {
       console.log('[mw session] req.sessionID:', req.sessionID)
-      return uuid() // use UUIDs for session IDs
+      const newSessionID = uuid()
+      console.log('[mw session] no sessionID generate one now: ', newSessionID )
+      return newSessionID
     },
     secret: 'some-randomly-generated-string-from-dot-env-file-111',
     resave: false,
