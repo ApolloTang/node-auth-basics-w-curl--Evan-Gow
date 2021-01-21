@@ -116,9 +116,9 @@ app.post('/login', (req, res, next) => {
         console.log('login method DOSE NOT exist in req object')
       }
 
-      req.login(
+      req.login( // <--- this will invoke passport.serializeUser()
         user,
-        (err) => { // <--- passport.serializeUser() is called before this callback
+        (err) => { // <---  this callback is called after passport.serializeUser() finished executing
           console.log('== C ==')
           console.log('At this point passport has been added to req.session: passport is an obj with property "user"')
           console.log('At this point user has been added to req: user is the user data retrived from database')
