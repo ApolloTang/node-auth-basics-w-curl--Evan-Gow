@@ -41,7 +41,7 @@ passport.use(
 // tell passport how to serialize the user
 passport.serializeUser((user, done) => {
   console.log('== B ==')
-  console.log('[pp.serializerUser] user: ', user)
+  console.log('[pp.serializerUser] user from database: ', user)
   const userID = user.id
   console.log('[pp.serializerUser] user id has been plugged out of user: ', userID)
   console.log('[pp.serializerUser] User id is save to the session file store here')
@@ -104,8 +104,8 @@ app.post('/login', (req, res, next) => {
       console.log('At this point passport has NOT been added to session')
       console.log('At this point user has NOT been added to request object')
 
-      console.log('[R:POST /login pp.authenticate()] req.session.passport:', JSON.stringify(req.session.passport)) // <-- undefined
-      console.log('[R:POST /login pp.authenticate()] req.user', JSON.stringify(req.user))   // <-- undefined
+      console.log('[R:POST /login pp.authenticate()] req.session.passport:', req.session.passport) // <-- undefined
+      console.log('[R:POST /login pp.authenticate()] req.user', req.user)   // <-- undefined
 
       if ('login' in req) {
         console.log('login method exist in req object') // login() method is added to req obj if user is found in database
@@ -115,11 +115,13 @@ app.post('/login', (req, res, next) => {
 
       req.login(user, (err) => {
         console.log('== C ==')
-        console.log('At this point passport has been added to session')
-        console.log('At this point user has been added to request object')
+        console.log('At this point passport has been added to req.session: passport is an obj with property "user"')
+        console.log('At this point user has been added to req: user is the user data retrived from database')
+        console.log('req.session.passport is an obj with property "user"')
+        console.log('req.user is the user data retrived from database')
 
-        console.log('[R:POST /login pp.login()] req.session.passport:', JSON.stringify(req.session.passport)) // <-- undefined
-        console.log('[R:POST /login pp.login()] req.user', JSON.stringify(req.user))   // <-- undefined
+        console.log('[R:POST /login pp.login()] req.session.passport:', req.session.passport) // <-- undefined
+        console.log('[R:POST /login pp.login()] req.user', req.user)   // <-- undefined
         return res.send('[R:POST /login passport.login()] You were authenticated & logged in!\n');
       })
     }
